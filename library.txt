@@ -1,0 +1,12 @@
+numpy
+click
+keras
+sklearn
+pandas
+tensorflow
+scipy
+h5py
+tqdm
+matplotlib
+pydot
+graphviz
