@@ -78,20 +78,14 @@ def train(learning_rate, batch_size, num_epochs, save_every, tensorboard_vis, pr
         logging.info('creating model')
         resnet50 = create_model(input_shape=(64, 64, 3), classes=1)
     
-    # freeze certain layer    
-#    resnet50.trainable = False
-#    resnet50.layers[-41].trainable = True
-    
     optimizer = keras.optimizers.Adam(learning_rate)
     resnet50.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
     
     if print_summary:
         resnet50.summary()
-               
+      
+    # callbacks extend
     callbacks = configure_callbacks(save_every, tensorboard_vis)
- 
-    # count certain amount of layer
-#    print(len(resnet50.layers) -resnet50.layers.index(resnet50.get_layer("res5a_branch2a")))
     
     #save training time per-epoch
     class TimeHistory(keras.callbacks.Callback):
@@ -112,10 +106,6 @@ def train(learning_rate, batch_size, num_epochs, save_every, tensorboard_vis, pr
     # train model
     logging.info('training model')
     
-     # display summary of model
-#    logging.info('model summary')
-#    resnet50.summary()
-    
     archi=resnet50.fit_generator(
         train_generator,
         steps_per_epoch=  12000//batch_size,
@@ -126,8 +116,7 @@ def train(learning_rate, batch_size, num_epochs, save_every, tensorboard_vis, pr
         shuffle=True,
         callbacks=callbacks
     )
-  
-   
+ 
     # save model
     logging.info('Saving trained model to `models/resnet50.h5`')
     resnet50.save('models/resnet50.h5')
@@ -140,10 +129,7 @@ def train(learning_rate, batch_size, num_epochs, save_every, tensorboard_vis, pr
         verbose=1
     )
     logging.info('test loss: {:.4f} - test acc: {:.4f}'.format(preds[0], preds[1]))
-
     keras.utils.plot_model(resnet50, to_file='models/resnet50.png')
-
-    
     
     # visualizing the training and validation accuracy
     logging.info('training-validation acc graph') 
